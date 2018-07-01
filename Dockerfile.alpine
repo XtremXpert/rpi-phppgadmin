@@ -1,31 +1,36 @@
-FROM        xtremxpert/docker-qemu-debian
+FROM        xtremxpert/qemu-static-alpine
 
 MAINTAINER  Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
 
-ENV         REFRESHED_AT 2018-07-01
+ENV         REFRESHED_AT 2018-06-17
+
 
 RUN [ "cross-build-start" ]
 
 # Update the package repository
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq && \
-    DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq && \
+RUN apk update && \
+    apk upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yqq wget curl
 
+
+# To cheat the minimal Slim foot print of debian-slim
 RUN mkdir -p /usr/share/man/man1 && \
 	mkdir -p /usr/share/man/man7
 
+
 # Added dotdeb to apt and install PHP
 RUN apt-get install -y \
-		php-cli \
-		php \
-		php-mcrypt \
-		php-curl \
-		php-pgsql \
+		php7.0-cli \
+		php7.0 \
+		php7.0-mcrypt \
+		php7.0-curl \
+		php7.0-pgsql \
 		postgresql-contrib \
 		phppgadmin && \
 	curl -sS https://getcomposer.org/installer | php && \
-	mv composer.phar /usr/local/bin/composer && \
-	sed -i 's/;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php/7.0/cli/php.ini && \
+	mv composer.phar /usr/local/bin/composer
+
+RUN sed -i 's/;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php/7.0/cli/php.ini && \
 	sed -i 's/\;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php/7.0/apache2/php.ini && \
 	a2enmod rewrite
 
@@ -34,6 +39,7 @@ COPY ./phppgadmin.conf /etc/apache2/conf.d/phppgadmin
 COPY ./config.inc.php /usr/share/phppgadmin/conf/config.inc.php
 
 RUN sed -i 's/variables_order = "GPCS"/variables_order = "EGPCS"/g' /etc/php/7.0/apache2/php.ini
+
 # Clean image
 RUN apt-get -yqq clean && \
 	apt-get -yqq purge && \
@@ -59,4 +65,4 @@ COPY start.sh /start.sh
 
 CMD ["bash", "start.sh"]
 
-RUN [ "cross-build-end" ]  
+RUN [ "cross-build-end" ]
