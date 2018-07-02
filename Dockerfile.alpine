@@ -4,7 +4,6 @@ MAINTAINER Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
 
 ENV REFRESHED_AT 2018-07-01
 
-
 RUN [ "cross-build-start" ]
 
 # Update the package repository
@@ -15,23 +14,27 @@ RUN apk update && \
 # Added dotdeb to apt and install PHP
 RUN apk add \
 		php7 \
-		php7-mcrypt \
 		php7-curl \
+		php7-dom \
+		php7-json \
+		php7-mbstring \
+		php7-mcrypt \
+		php7-openssl \
 		php7-pgsql \
-		postgresql-contrib \
-		phppgadmin && \
+		php7-phar \
+		postgresql-contrib && \
 	curl -sS https://getcomposer.org/installer | php && \
 	mv composer.phar /usr/local/bin/composer
 
-RUN sed -i 's/;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php/7.0/cli/php.ini && \
-	sed -i 's/\;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php/7.0/apache2/php.ini && \
+RUN ls -la /etc/php7/conf.d && sed -i 's/;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php7/cli/php.ini && \
+	sed -i 's/\;include_path = ".:\/usr\/share\/php"/include_path = ".:\/var\/www\/library"/g' /etc/php7/apache2/php.ini && \
 	a2enmod rewrite
 
 # Fix phppgadmin
 COPY ./phppgadmin.conf /etc/apache2/conf.d/phppgadmin
 COPY ./config.inc.php /usr/share/phppgadmin/conf/config.inc.php
 
-RUN sed -i 's/variables_order = "GPCS"/variables_order = "EGPCS"/g' /etc/php/7.0/apache2/php.ini
+RUN sed -i 's/variables_order = "GPCS"/variables_order = "EGPCS"/g' /etc/php7/apache2/php.ini
 
 # Set Apache environment variables (can be changed on docker run with -e)
 ENV APACHE_RUN_USER www-data
