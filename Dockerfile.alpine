@@ -1,25 +1,19 @@
-FROM        xtremxpert/qemu-static-alpine
+FROM xtremxpert/qemu-static-alpine
 
-MAINTAINER  Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
+MAINTAINER Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
 
-ENV         REFRESHED_AT 2018-06-17
+ENV REFRESHED_AT 2018-07-01
 
 
 RUN [ "cross-build-start" ]
 
 # Update the package repository
 RUN apk update && \
-    apk upgrade && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yqq wget curl
-
-
-# To cheat the minimal Slim foot print of debian-slim
-RUN mkdir -p /usr/share/man/man1 && \
-	mkdir -p /usr/share/man/man7
-
+	apk upgrade && \
+	apk add curl
 
 # Added dotdeb to apt and install PHP
-RUN apt-get install -y \
+RUN apk add \
 		php7.0-cli \
 		php7.0 \
 		php7.0-mcrypt \
@@ -39,12 +33,6 @@ COPY ./phppgadmin.conf /etc/apache2/conf.d/phppgadmin
 COPY ./config.inc.php /usr/share/phppgadmin/conf/config.inc.php
 
 RUN sed -i 's/variables_order = "GPCS"/variables_order = "EGPCS"/g' /etc/php/7.0/apache2/php.ini
-
-# Clean image
-RUN apt-get -yqq clean && \
-	apt-get -yqq purge && \
-	rm -rf /tmp/* /var/tmp/* && \
-	rm -rf /var/lib/apt/lists/*
 
 # Set Apache environment variables (can be changed on docker run with -e)
 ENV APACHE_RUN_USER www-data
