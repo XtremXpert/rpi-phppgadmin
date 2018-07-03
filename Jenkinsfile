@@ -11,7 +11,7 @@ node {
         /* This builds the actual image; synonymous to
          * docker build on the command line */
 
-        app = docker.build("xtremxpert/rpi-phppgadmin")
+        app = docker.build("xtremxpert/rpi-phppgadmin","Dockerfile.debian")
     }
 
     stage('Test image') {
