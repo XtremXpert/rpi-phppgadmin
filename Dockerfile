@@ -1,10 +1,9 @@
-FROM        xtremxpert/docker-qemu-debian
+FROM debian
 
 MAINTAINER  Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
 
 ENV         REFRESHED_AT 2018-07-01
 
-RUN [ "cross-build-start" ]
 
 # Update the package repository
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq && \
@@ -59,4 +58,3 @@ COPY start.sh /start.sh
 
 CMD ["bash", "start.sh"]
 
-RUN [ "cross-build-end" ]  
