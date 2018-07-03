@@ -1,4 +1,4 @@
-FROM XtremXpert/docker-qemu-debian
+FROM xtremxpert/docker-qemu-debian
 
 MAINTAINER Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
 
