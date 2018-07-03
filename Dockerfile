@@ -1,8 +1,8 @@
-FROM debian
+FROM XtremXpert/docker-qemu-debian
 
-MAINTAINER  Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
+MAINTAINER Benoit Vezina a.k.a. XtremXpert "benoit@xtremxpert.com"
 
-ENV         REFRESHED_AT 2018-07-01
+ENV REFRESHED_AT 2018-07-01
 
 
 # Update the package repository
